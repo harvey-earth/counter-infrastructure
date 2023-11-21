@@ -1,0 +1,61 @@
+---
+# tasks file for bastion
+- name: Install required packages
+  become: true
+  apt:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+   packages:
+      - curl
+      - ruby
+
+- name: See if gitlab has been installed
+  ansible.builtin.stat:
+    path: "/usr/bin/gitlab-runner"
+  register: runner
+  
+
+- name: Install gitlab-runner repository
+  become: true
+  shell: |
+    curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | bash
+  when: not runner.stat.exists
+
+- name: Install runner
+  apt:
+    name: gitlab-runner
+    update_cache: yes
+  when: not runner.stat.exists
+
+- name: Configure runner
+  shell: |
+    sudo gitlab-runner register \
+    --non-interactive \
+    --url "https://gitlab.com/" \
+    --registration-token "GR13489418D7Sq7bJFokpszog9aBp" \
+    --executor "shell" \
+    --description "Counter Bastion Runner" \
+    --tag-list "counter,bastion" \
+    --run-untagged="false" \
+    --locked="false" \
+    --access-level="not_protected"
+  when: not runner.stat.exists
+
+- name: Copy SSH keys to gitlab-runner
+  copy:
+    src: /root/.ssh
+    dest: /home/gitlab-runner/
+    owner: gitlab-runner
+    group: gitlab-runner
+    mode: preserve
+    remote_src: yes
+
+- name: Copy inventory file
+  copy:
+    src: /root/inventory
+    dest: /home/gitlab-runner/inventory
+    owner: gitlab-runner
+    group: gitlab-runner
+    mode: preserve
+    remote_src: yes

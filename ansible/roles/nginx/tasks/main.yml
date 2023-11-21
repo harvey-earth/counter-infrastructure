@@ -1,0 +1,24 @@
+---
+# tasks file for nginx
+- name: Install nginx
+  apt:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - nginx
+
+- name: Configure nginx
+  copy:
+    src: nginx-counter.conf
+    dest: /etc/nginx/sites-enabled/counter.conf
+    owner: root
+    group: root
+    mode: '644'
+  notify:
+    - Restart nginx
+
+- name: Remove sites-enabled/default
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent

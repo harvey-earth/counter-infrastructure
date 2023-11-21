@@ -1,0 +1,34 @@
+---
+# Call role tasks
+- name: Set up app server
+  hosts: app
+  become: true
+
+  roles:
+    - app
+    - common
+    - nginx
+
+- name: Install bastion 
+  hosts: localhost
+  become: yes
+
+  roles:
+    - bastion
+    - common
+
+- name: Set up Postgresql
+  hosts: db
+  become: yes
+
+  roles:
+    - common
+    - database
+
+- name: Set up redis
+  hosts: redis
+  become: true
+
+  roles:
+    - common
+    - redis

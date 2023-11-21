@@ -1,0 +1,6 @@
+---
+# tasks file for common
+- name: Update apt repo and packages
+  apt:
+    update_cache: yes
+    upgrade: full

@@ -1,0 +1,18 @@
+---
+# tasks file for redis
+- name: Install required packages
+  apt:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - gnupg
+    - vim
+    - redis-server
+
+- name: Configure Redis server
+  copy:
+    src: redis.conf
+    dest: /etc/redis/redis.conf
+  notify:
+    - Restart redis

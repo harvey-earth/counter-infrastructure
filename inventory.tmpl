@@ -1,0 +1,21 @@
+[bastion]
+bastion ansible_host=localhost
+  remote_user: ubuntu
+
+[db]
+%{ for index, group in ansible_db ~}
+${ ansible_db_name[index] } ansible_host=${ ansible_db_ip[index]}
+%{ endfor ~}
+  remote_user: ubuntu
+
+[redis]
+%{ for index, group in ansible_redis ~}
+${ ansible_redis_name[index] } ansible_host=${ ansible_redis_ip[index] }
+%{ endfor ~}
+  remote_user: ubuntu
+
+[app]
+%{ for index, group in ansible_app ~}
+${ ansible_app_name[index] } ansible_host=${ ansible_app_ip[index] }
+%{ endfor ~}
+  remote_user: ubuntu

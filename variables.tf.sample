@@ -1,0 +1,164 @@
+# Environment variables
+#################################################
+variable "AWS_ACCESS_KEY_ID" {}
+
+variable "AWS_SECRET_ACCESS_KEY" {}
+
+variable "AWS_REGION" {}
+
+variable "SSH_KEY" {}
+
+variable "aws_r53_zone_id" {
+  description = "Route 53 Zone ID to create records"
+  type    = string
+  default = ""
+}
+
+variable "pg_password" {}
+
+variable "counter-key-pair" {
+  description = "Name of SSH Keypair"
+  type        = string
+  default     = "counter-key"
+}
+
+variable "counter-key-pair-value" {
+  description = "Value of Public SSH Keypair"
+  type        = string
+  default     = ""
+}
+
+variable "tfc_host" {
+  description = "Terraform Cloud backend hostname"
+  type        = string
+  default     = ""
+}
+
+variable "tfc_org" {
+  description = "Terraform Cloud organization"
+  type        = string
+  default     = ""
+}
+
+variable "tfc_workspace" {
+  description = "Terraform Cloud workspace"
+  type        = string
+  default     = ""
+}
+
+# Application infrastructure variables
+###################################################
+variable "avail_zone" {
+  description = "AWS Region Availability Zone"
+  type        = string
+  default     = ""
+}
+
+variable "image" {
+  description = "AMI for servers"
+  type        = string
+  default     = ""
+}
+
+variable "db_disk_size" {
+  type    = number
+  default = 15
+}
+
+variable "root_disk_size" {
+  description = "Size of root disk"
+  type        = number
+  default     = 5
+}
+
+variable "root_disk_type" {
+  description = "Type of root disk"
+  type        = string
+  default     = "gp3"
+}
+
+variable "app_count" {
+  description = "Number of app instances"
+  default     = 2
+}
+
+variable "app_size" {
+  description = "Size of app server"
+  type        = string
+  default     = "t4g.nano"
+}
+
+variable "bastion_size" {
+  description = "Size of bastion server"
+  type        = string
+  default     = "t4g.nano"
+}
+
+variable "db_count" {
+  description = "Number of database instances"
+  default     = 1
+}
+
+variable "db_size" {
+  description = "Size of database server"
+  type        = string
+  default     = "t4g.micro"
+}
+
+variable "redis_count" {
+  description = "Number of redis instances"
+  default     = 1
+}
+
+variable "redis_size" {
+  description = "Size of redis server"
+  type        = string
+  default     = "t4g.nano"
+}
+
+# Networking infrastructure variables
+###################################################
+variable "bastion_cidr" {
+  type    = string
+  default = ""
+}
+
+variable "db_cidr" {
+  type    = string
+  default = ""
+}
+
+variable "lb_cidr" {
+  type    = string
+  default = ""
+}
+
+variable "public_cidr" {
+  type    = string
+  default = ""
+}
+
+variable "web_cidr" {
+  type    = string
+  default = ""
+}
+
+variable "vpc_cidr" {
+  type    = string
+  default = ""
+}
+
+variable "domain_name" {
+  type    = string
+  default = ""
+}
+
+variable "host_name" {
+  type    = string
+  default = "counter.${var.domain_name}"
+}
+
+variable "bastion_host" {
+  type    = string
+  default = "bastion-${host_name}"
+}

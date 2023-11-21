@@ -1,0 +1,39 @@
+[Unit]
+Description=Puma Application service
+After=network.target
+
+[Service]
+Type=notify
+
+# If your Puma process locks up, systemd's watchdog will restart it within seconds.
+WatchdogSec=10
+
+# Preferably configure a non-privileged user
+User=counter
+
+# The path to your application code root directory.
+# Also replace the "<YOUR_APP_PATH>" placeholders below with this path.
+# Example /home/username/myapp
+WorkingDirectory=/home/counter
+
+# Helpful for debugging socket activation, etc.
+# Environment=PUMA_DEBUG=1
+
+# SystemD will not run puma even if it is in your path. You must specify
+# an absolute URL to puma. For example /usr/local/bin/puma
+# Alternatively, create a binstub with `bundle binstubs puma --path ./sbin` in the WorkingDirectory
+#ExecStart=/<FULLPATH>/bin/puma -C <YOUR_APP_PATH>/puma.rb
+
+# Variant: Rails start.
+Environment="RAILS_ENV=production"
+ExecStart=/usr/local/bin/bundle exec puma
+
+# Variant: Use `bundle exec --keep-file-descriptors puma` instead of binstub
+# Variant: Specify directives inline.
+# ExecStart=/<FULLPATH>/puma -b tcp://0.0.0.0:9292 -b ssl://0.0.0.0:9293?key=key.pem&cert=cert.pem
+
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

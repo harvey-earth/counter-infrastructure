@@ -1,0 +1,54 @@
+---
+# tasks file for app
+- name: Install required packages
+  apt:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+   packages:
+      - build-essential
+      - curl
+      - libpq-dev
+      - libssl-dev
+      - openssl
+      - racc
+
+- name: Create application user
+  user:
+    name=counter
+    append=yes
+    state=present
+    createhome=yes
+    shell=/bin/bash
+
+- name: Move application systemd file
+  copy:
+    src: puma.service
+    dest: /etc/systemd/system/puma.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install app code
+  ansible.builtin.git:
+    repo: 'https://github.com/harvey-earth/counter-app.git'
+    dest: '/home/counter/counter-app'
+    version: main
+
+- name: Install RVM
+  become_user: counter
+  shell: "curl -sSL https://get.rvm.io | bash"
+
+- name: Install ruby
+  become_user: counter
+  shell: "rvm install 3.2.2"
+
+- name: Install bundler
+  become_user: counter
+  shell: /usr/bin/gem install bundler
+
+- name: Start puma
+  systemd:
+    name: puma
+    state: started
+  ignore_errors: true
